@@ -36,3 +36,10 @@ Node's `readline` module works with streams, but it does not handle encoding det
 - Multi-byte UTF-8 characters split across buffer boundaries are handled correctly.
 - UTF-16BE is supported by manually swapping bytes to little-endian before decoding, since Node's `StringDecoder` does not support big-endian UTF-16.
 - An odd number of bytes at the end of a UTF-16BE file is silently dropped, as it cannot form a complete code unit.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
